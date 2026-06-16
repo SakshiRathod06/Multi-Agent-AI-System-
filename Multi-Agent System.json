@@ -1,0 +1,320 @@
+{
+  "name": "Multi-Agent System",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        208
+      ],
+      "id": "e49e2234-edc5-4667-b47a-19e9148a4e9d",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ktweztLY59lIq7Hu",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        352,
+        208
+      ],
+      "id": "06096890-eea9-407d-a872-275d863db516",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ktweztLY59lIq7Hu",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        848,
+        160
+      ],
+      "id": "617a3d39-df75-4ac0-931d-85e0015c8e7a",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ktweztLY59lIq7Hu",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        208
+      ],
+      "id": "fdbee159-5827-4a95-a523-973a45d09b53",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ktweztLY59lIq7Hu",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Supervisor Agent.\n\nYour job:\n1. Take the user task\n2. Break it into 3 subtasks:\n   - research\n   - summary\n   - verification\n\nReturn ONLY valid JSON like this:\n{\n  \"research\": \"...\",\n  \"summary\": \"...\",\n  \"verify\": \"...\"\n}\n\nUser Task:\n{{$json.task}}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "0e4bd6c1-161f-420b-affe-28e2eca9aab4",
+      "name": "Supervisor Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Research Agent.\n\nTask:\n{{$json.research}}\n\nRules:\n- Give only bullet points (max 5)\n- No paragraphs\n- Keep it simple and direct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        480,
+        0
+      ],
+      "id": "1a4ceef6-414f-4996-a579-e8d48f03bfb0",
+      "name": "Research Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Summarizer Agent.\n\nTask:\n{{$json.output}}\n\nRules:\n- Only 4–5 bullet points\n- Very simple language\n- No explanation paragraphs",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        880,
+        16
+      ],
+      "id": "f77e3bbd-eb95-470a-8260-e82c76f122e0",
+      "name": "Summarizer Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Verification Agent.\n\nCheck the content in simple terms.\n\nRules:\n- Do NOT do strict fact checking\n- Just say if it looks reasonable or not\n- Keep response 1–2 lines\n- Be supportive, not critical\n\nOutput format:\n- Status: Correct / Mostly Correct / Needs Review\n- Reason: short explanation",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1184,
+        0
+      ],
+      "id": "cb82b587-7064-4bf9-a1d9-9867ced27c2f",
+      "name": "Verification Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "6ac3d19c-75a5-4733-a0a8-cdcb55dbb713",
+      "name": "When chat message received",
+      "webhookId": "1c5326b1-3ed7-4403-a0a3-58d1b86a897e"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are the Final Report Agent.\n\nCreate a professional report using the verified summary.\n\nStructure:\n1. Introduction\n2. Applications of AI in Education\n3. Benefits\n4. Challenges\n5. Conclusion\n\nReturn the final report only.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1536,
+        0
+      ],
+      "id": "b3ebc4d3-f141-4e20-980c-94e6a37dc900",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        208
+      ],
+      "id": "d7631898-7ed9-4606-a57c-50e91803deaf",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ktweztLY59lIq7Hu",
+          "name": "OpenRouter account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Supervisor Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarizer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Verification Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supervisor Agent": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Summarizer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarizer Agent": {
+      "main": [
+        [
+          {
+            "node": "Verification Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verification Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Supervisor Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "65cdfdf8-090d-48b3-b860-d8b97e06ab02",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "07f21a1331cbe29c0a394f14fd999c2ecea5ef9027e6042ddd69e100be367d65"
+  },
+  "nodeGroups": [],
+  "id": "ZiKuVYmOgYcMrdqw",
+  "tags": []
+}
