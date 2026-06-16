@@ -1,4 +1,4 @@
-<img width="1425" height="338" alt="Screenshot 2026-06-16 112233" src="https://github.com/user-attachments/assets/cec9982a-87df-4070-9883-d4e18c3b6148" /># Multi-Agent AI System: Supervisor-Worker Architecture
+# Multi-Agent AI System: Supervisor-Worker Architecture
 
 ## Project Description
 
